@@ -67,14 +67,18 @@ fun HomeScreen(
             if(viewModel.currentSong.value != null){
                 PlayedSongCard(
                     song = viewModel.currentSong.value,
-                    onPrev = {},
+                    onPrev = {
+                        viewModel.moveSong(forward = false)
+                    },
                     onResume = {
                         viewModel.resumeSong()
                     },
                     onPause = {
                         viewModel.pauseSong()
                     },
-                    onNext = {}
+                    onNext = {
+                        viewModel.moveSong(forward = true)
+                    }
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))

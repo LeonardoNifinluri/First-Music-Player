@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +26,8 @@ class HomeViewModel(
     private val _currentSong = mutableStateOf<Song?>(value = null)
     val currentSong: State<Song?> = _currentSong
 
+    private val _indexSong = mutableIntStateOf(value = -1)
+
     fun fetchSongs(){
         viewModelScope.launch {
             _songs.value = getSongsUseCase()
@@ -37,8 +40,14 @@ class HomeViewModel(
 
         // Find the song by ID
         _songs.value.find { it.id == songId }?.let { song ->
+            //change the currentSong
             _currentSong.value = song
+
+            //update the currentSong isPlaying
             song.isPlaying.value = true
+
+            //update the indexSong
+            _indexSong.intValue = _songs.value.indexOf(song)
 
             song.uri?.let { songUri ->
                 mediaPlayer = MediaPlayer().apply {
@@ -69,9 +78,16 @@ class HomeViewModel(
         _currentSong.value?.isPlaying?.value = true
     }
 
-    fun nextSong(){}
+    fun moveSong(forward: Boolean){
+        val size = _songs.value.size
+        val index = when(forward){
+            true -> (_indexSong.intValue + 1) % size
+            false -> if(_indexSong.intValue == 0) size - 1 else _indexSong.intValue - 1
+        }
+        val songId = _songs.value[index].id
+        playSong(songId)
+    }
 
-    fun prevSong(){}
     private fun stopSong(){
         //this is to update all the songs isPlaying state
         _songs.value.find { song ->
