@@ -12,18 +12,17 @@ import androidx.core.app.ActivityCompat
 import com.example.musicplayer.core.ui.navigation.NavGraph
 import com.example.musicplayer.ui.theme.MusicPlayerTheme
 import android.Manifest
-import android.media.MediaPlayer
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import com.example.musicplayer.core.service.MusicService
 import com.example.musicplayer.ui.theme.MainColor
 
 class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val musicService = MusicService(context = this)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(
                 this,
@@ -42,8 +41,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val mediaPlayer by remember { mutableStateOf<MediaPlayer?>(value = null) }
-
             MusicPlayerTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -51,7 +48,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavGraph(
                         modifier = Modifier.padding(innerPadding),
-                        mediaPlayer = mediaPlayer
+                        musicService = musicService
                     )
                 }
             }
