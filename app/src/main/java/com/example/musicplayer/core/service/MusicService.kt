@@ -9,6 +9,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.example.musicplayer.core.model.Song
+import kotlin.random.Random
 
 class MusicService(private val context: Context) {
 
@@ -69,7 +70,10 @@ class MusicService(private val context: Context) {
         _songs.value = songs
     }
 
-    fun playSong(songId: Long){
+    fun playSong(
+        songId: Long,
+        isShuffled: Boolean
+    ){
         stopSong()
 
         _songs.value.find {
@@ -93,12 +97,30 @@ class MusicService(private val context: Context) {
                     setOnCompletionListener {
                         _currentSong.value?.isPlaying?.value = false
                         Log.d("MediaPlayer", "Playback completed for ${song.name}")
+                        //this is to make the playback goes on forever (until get block)
+                        if(isShuffled){
+                            playShuffle()
+                        }else{
+                            moveSong(forward = true)
+                        }
                     }
                 }
 
             }
         }
+    }
 
+    fun playShuffle(){
+        //update the currentIndex by choosing random number
+        val index = Random.nextInt(
+            from = 0,
+            until = _songs.value.size
+        )
+        val songId = _songs.value[index].id
+        playSong(
+            songId = songId,
+            isShuffled = true
+        )
     }
 
     private fun stopSong(){
@@ -134,7 +156,10 @@ class MusicService(private val context: Context) {
             false -> if(_indexSong.intValue == 0) size - 1 else _indexSong.intValue - 1
         }
         val songId = _songs.value[index].id
-        playSong(songId)
+        playSong(
+            songId = songId,
+            isShuffled = false
+        )
     }
 
 }

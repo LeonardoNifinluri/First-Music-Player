@@ -79,7 +79,7 @@ fun HomeScreen(
                 songs = songs,
                 onShuffleClick = {
                     //this is handle shuffle play
-                    Log.d("ShuffleButton", "Clicked")
+                    viewModel.playShuffle()
                 },
                 onSortClick = {
                     //this is handle sort display

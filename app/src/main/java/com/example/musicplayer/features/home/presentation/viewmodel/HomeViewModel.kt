@@ -13,7 +13,14 @@ class HomeViewModel(private val musicService: MusicService): ViewModel() {
     val currentSong: State<Song?> = musicService.currentSong
 
     fun playSong(songId: Long) {
-        musicService.playSong(songId)
+        musicService.playSong(
+            songId = songId,
+            isShuffled = false
+        )
+    }
+
+    fun playShuffle(){
+        musicService.playShuffle()
     }
 
     fun pauseSong(){
