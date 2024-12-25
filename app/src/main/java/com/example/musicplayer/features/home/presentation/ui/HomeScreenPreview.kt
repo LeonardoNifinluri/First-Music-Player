@@ -102,6 +102,9 @@ fun HomeScreenPreview() {
                 },
                 onSongClick = { songId ->
                     Log.d("SongCard", "Play song with id: $songId")
+                },
+                onAddToFavorite = { song ->
+                    song.isFavorite.value = !song.isFavorite.value
                 }
             )
         }

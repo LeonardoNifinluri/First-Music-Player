@@ -10,6 +10,14 @@
       </SelectionState>
       <SelectionState runConfigName="PreviewSongListSection">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2024-12-25T13:43:03.624997500Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=d43764bb" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="PreviewSongCard">
         <option name="selectionMode" value="DROPDOWN" />

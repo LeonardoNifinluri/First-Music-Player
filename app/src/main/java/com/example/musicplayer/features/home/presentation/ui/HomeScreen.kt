@@ -89,6 +89,10 @@ fun HomeScreen(
                     //this is handle play clicked song
                     Toast.makeText(context, "Playing song", Toast.LENGTH_SHORT).show()
                     viewModel.playSong(songId = songId)
+                },
+                onAddToFavorite = { song ->
+                    Log.d("Favorite${song.id}", if(song.isFavorite.value) "Remove ${song.id} from favorite" else "Add ${song.id} to favorite")
+                    song.isFavorite.value = !song.isFavorite.value
                 }
             )
 
