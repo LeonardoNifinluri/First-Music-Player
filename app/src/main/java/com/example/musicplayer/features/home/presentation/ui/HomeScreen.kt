@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,8 +30,12 @@ fun HomeScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val songs = viewModel.songs.value
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.updateFavorite()
+    }
+
+    val songs = viewModel.songs.value
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MainColor
@@ -88,11 +93,15 @@ fun HomeScreen(
                 onSongClick = { songId ->
                     //this is handle play clicked song
                     Toast.makeText(context, "Playing song", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, viewModel.songs.value.find { songId == it.id }?.isFavorite.toString(), Toast.LENGTH_SHORT).show()
                     viewModel.playSong(songId = songId)
                 },
                 onAddToFavorite = { song ->
-                    Log.d("Favorite${song.id}", if(song.isFavorite.value) "Remove ${song.id} from favorite" else "Add ${song.id} to favorite")
-                    song.isFavorite.value = !song.isFavorite.value
+                    if(song.isFavorite.value){
+                        viewModel.removeFromFavorite(song)
+                    }else{
+                        viewModel.addToFavorite(song)
+                    }
                 }
             )
 

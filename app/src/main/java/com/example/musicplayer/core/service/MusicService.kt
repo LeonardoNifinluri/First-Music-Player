@@ -8,16 +8,29 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import com.example.musicplayer.core.FavoriteDao
+import com.example.musicplayer.core.model.Favorite
 import com.example.musicplayer.core.model.Song
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
-class MusicService(private val context: Context) {
+class MusicService(
+    private val context: Context,
+    private val favoriteDao: FavoriteDao
+) {
 
     private val _mediaPlayer = mutableStateOf<MediaPlayer?>(value = null)
-//    val mediaPlayer: State<MediaPlayer?> = _mediaPlayer
 
     private val _songs = mutableStateOf<List<Song>>(emptyList())
     val song: State<List<Song>> = _songs
+
+    private val _favoriteSongs = MutableStateFlow<List<Song>>(emptyList())
+    val favoriteSong = _favoriteSongs.asStateFlow()
 
     private val _currentSong = mutableStateOf<Song?>(value = null)
     val currentSong: State<Song?> = _currentSong
@@ -25,6 +38,11 @@ class MusicService(private val context: Context) {
     private val _indexSong = mutableIntStateOf(value = -1)
 
     init{
+        loadSongsFromMediaStore()
+        loadFavoriteSongs()
+    }
+
+    private fun loadSongsFromMediaStore(){
         val songs = mutableListOf<Song>()
         //projection is what column/field of MediaStore you need
         val projection = arrayOf(
@@ -68,6 +86,54 @@ class MusicService(private val context: Context) {
             }
         }
         _songs.value = songs
+    }
+
+    private fun loadFavoriteSongs(){
+        val map = mutableMapOf<Long, Song>()
+        _songs.value.forEach {
+            map[it.id] = it
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            val favorites = favoriteDao.getFavorites()
+            val favoritesSongs = mutableListOf<Song>()
+            favorites.forEach { favorite ->
+                map[favorite.songId]?.let { favoritesSongs.add(it) }
+            }
+            _favoriteSongs.value = favoritesSongs
+        }
+    }
+
+    fun addToFavorite(song: Song){
+        val favorite = Favorite(songId = song.id)
+        CoroutineScope(Dispatchers.IO).launch {
+            favoriteDao.insertFavorite(favorite)
+            song.isFavorite.value = true
+            loadFavoriteSongs()
+        }
+    }
+
+    fun removeFromFavorite(song: Song){
+        val favorite = Favorite(songId = song.id)
+        CoroutineScope(Dispatchers.IO).launch {
+            favoriteDao.deleteFavorite(favorite)
+            song.isFavorite.value = false
+            loadFavoriteSongs()
+        }
+    }
+
+
+    suspend fun isFavorite(songId: Long): Boolean{
+        /*
+        CoroutineScope(Dispatchers.IO).launch {
+            return favoriteDao.isFavorite(songId)
+        }
+        issue with this way is attempts to return a value from coroutine  which doesn't directly modify the outer function's return value.
+        kotlin function can't return value directly from a coroutine scope
+        solution : using callback or using kotlin coroutine (suspend)
+        */
+        return withContext(Dispatchers.IO){
+            favoriteDao.isFavorite(songId)
+        }
     }
 
     fun playSong(

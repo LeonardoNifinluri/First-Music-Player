@@ -14,14 +14,29 @@ import com.example.musicplayer.ui.theme.MusicPlayerTheme
 import android.Manifest
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.room.Room
+import com.example.musicplayer.core.MusicDatabase
 import com.example.musicplayer.core.service.MusicService
 import com.example.musicplayer.ui.theme.MainColor
 
 class MainActivity : ComponentActivity() {
 
+    private lateinit var database: MusicDatabase
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
-        val musicService = MusicService(context = this)
+        database = Room.databaseBuilder(
+            applicationContext,
+            MusicDatabase::class.java,
+            name = "music_app_database"
+        ).build()
+
+        val favoriteDao = database.favoriteDao()
+
+        val musicService = MusicService(
+            context = this,
+            favoriteDao = favoriteDao
+        )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(
