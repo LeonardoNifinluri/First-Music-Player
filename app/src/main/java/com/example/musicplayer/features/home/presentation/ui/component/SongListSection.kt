@@ -34,7 +34,8 @@ fun SongListSection(
     songs: List<Song>,
     onShuffleClick: () -> Unit,
     onSortClick: () -> Unit,
-    onSongClick: (Long) -> Unit
+    onSongClick: (Long) -> Unit,
+    onAddToFavorite: (Song) -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -97,6 +98,9 @@ fun SongListSection(
                         song = song,
                         onClick = {
                             onSongClick(song.id)
+                        },
+                        onAddToFavorite = {
+                            onAddToFavorite(song)
                         }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
@@ -140,6 +144,9 @@ fun PreviewSongListSection() {
             },
             onSongClick = { songId ->
                 Log.d("SongCard", "Play song id: $songId")
+            },
+            onAddToFavorite = { song->
+                song.isFavorite.value = !song.isFavorite.value
             }
         )
     }

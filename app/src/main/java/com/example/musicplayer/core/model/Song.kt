@@ -9,4 +9,5 @@ data class Song(
     val name: String,
     val uri: Uri?,
     val isPlaying: MutableState<Boolean> = mutableStateOf(value = false),
+    val isFavorite: MutableState<Boolean> = mutableStateOf(value = false),
 )

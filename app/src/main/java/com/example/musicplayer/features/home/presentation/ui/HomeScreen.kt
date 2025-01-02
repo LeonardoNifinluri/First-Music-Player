@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,12 +30,12 @@ fun HomeScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val songs by viewModel.songs.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.fetchSongs()
+        viewModel.updateFavorite()
     }
 
+    val songs = viewModel.songs.value
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MainColor
@@ -86,7 +84,7 @@ fun HomeScreen(
                 songs = songs,
                 onShuffleClick = {
                     //this is handle shuffle play
-                    Log.d("ShuffleButton", "Clicked")
+                    viewModel.playShuffle()
                 },
                 onSortClick = {
                     //this is handle sort display
@@ -95,7 +93,15 @@ fun HomeScreen(
                 onSongClick = { songId ->
                     //this is handle play clicked song
                     Toast.makeText(context, "Playing song", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, viewModel.songs.value.find { songId == it.id }?.isFavorite.toString(), Toast.LENGTH_SHORT).show()
                     viewModel.playSong(songId = songId)
+                },
+                onAddToFavorite = { song ->
+                    if(song.isFavorite.value){
+                        viewModel.removeFromFavorite(song)
+                    }else{
+                        viewModel.addToFavorite(song)
+                    }
                 }
             )
 
