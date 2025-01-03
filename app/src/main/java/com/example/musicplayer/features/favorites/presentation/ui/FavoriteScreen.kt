@@ -65,6 +65,7 @@ fun FavoriteScreen(
                 songs = favoriteSongs,
                 onPlayClick = {
                     Log.d("PlayFavoriteButton", "Clicked")
+                    viewModel.playFavoriteSongs()
                 },
                 onAddToFavorite = { song ->
                     Log.d("FavoriteButton", "Clicked with id: $song")
