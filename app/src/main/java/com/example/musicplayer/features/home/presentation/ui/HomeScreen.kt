@@ -20,7 +20,7 @@ import com.example.musicplayer.core.ui.navigation.AppRoutes
 import com.example.musicplayer.core.ui.shared_component.PlayedSongCard
 import com.example.musicplayer.features.home.presentation.ui.component.ButtonSelectionSection
 import com.example.musicplayer.features.home.presentation.ui.component.HeaderSection
-import com.example.musicplayer.features.home.presentation.ui.component.SongListSection
+import com.example.musicplayer.core.ui.shared_component.SongListSection
 import com.example.musicplayer.features.home.presentation.viewmodel.HomeViewModel
 import com.example.musicplayer.ui.theme.MainColor
 
@@ -81,8 +81,9 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(8.dp))
             SongListSection(
+                title = "Shuffle",
                 songs = songs,
-                onShuffleClick = {
+                onPlayClick = {
                     //this is handle shuffle play
                     viewModel.playShuffle()
                 },

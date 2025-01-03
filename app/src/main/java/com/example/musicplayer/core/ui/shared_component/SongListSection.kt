@@ -1,4 +1,4 @@
-package com.example.musicplayer.features.home.presentation.ui.component
+package com.example.musicplayer.core.ui.shared_component
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.musicplayer.core.model.Song
+import com.example.musicplayer.features.home.presentation.ui.component.SongCard
 import com.example.musicplayer.ui.theme.MainColor
 
 @Composable
 fun SongListSection(
+    title: String,
     songs: List<Song>,
-    onShuffleClick: () -> Unit,
+    onPlayClick: () -> Unit,
     onSortClick: () -> Unit,
     onSongClick: (Long) -> Unit,
     onAddToFavorite: (Song) -> Unit
@@ -57,7 +59,7 @@ fun SongListSection(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     IconButton(
-                        onClick = onShuffleClick
+                        onClick = onPlayClick
                     ) {
                         Icon(
                             imageVector = Icons.Default.PlayArrow,
@@ -67,7 +69,7 @@ fun SongListSection(
                         )
                     }
                     Text(
-                        text = "Shuffle",
+                        text = title,
                         color = Color.White,
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -135,8 +137,9 @@ fun PreviewSongListSection() {
         color = MainColor
     ){
         SongListSection(
+            title = "Shuffle",
             songs = songs,
-            onShuffleClick = {
+            onPlayClick = {
                 Log.d("ShuffleButton", "Clicked")
             },
             onSortClick = {
