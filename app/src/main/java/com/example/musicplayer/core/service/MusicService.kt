@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import com.example.musicplayer.core.FavoriteDao
+import com.example.musicplayer.core.dao.FavoriteDao
 import com.example.musicplayer.core.model.Favorite
 import com.example.musicplayer.core.model.Song
 import kotlinx.coroutines.CoroutineScope

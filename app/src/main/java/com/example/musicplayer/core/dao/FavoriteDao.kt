@@ -1,4 +1,4 @@
-package com.example.musicplayer.core
+package com.example.musicplayer.core.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
