@@ -15,7 +15,7 @@ import android.Manifest
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.Room
-import com.example.musicplayer.core.MusicDatabase
+import com.example.musicplayer.core.database.MusicDatabase
 import com.example.musicplayer.core.service.MusicService
 import com.example.musicplayer.ui.theme.MainColor
 

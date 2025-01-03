@@ -20,7 +20,7 @@ import com.example.musicplayer.core.ui.navigation.AppRoutes
 import com.example.musicplayer.core.ui.shared_component.PlayedSongCard
 import com.example.musicplayer.features.home.presentation.ui.component.ButtonSelectionSection
 import com.example.musicplayer.features.home.presentation.ui.component.HeaderSection
-import com.example.musicplayer.features.home.presentation.ui.component.SongListSection
+import com.example.musicplayer.core.ui.shared_component.SongListSection
 import com.example.musicplayer.features.home.presentation.viewmodel.HomeViewModel
 import com.example.musicplayer.ui.theme.MainColor
 
@@ -81,8 +81,9 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(8.dp))
             SongListSection(
+                title = "Shuffle",
                 songs = songs,
-                onShuffleClick = {
+                onPlayClick = {
                     //this is handle shuffle play
                     viewModel.playShuffle()
                 },
@@ -93,7 +94,7 @@ fun HomeScreen(
                 onSongClick = { songId ->
                     //this is handle play clicked song
                     Toast.makeText(context, "Playing song", Toast.LENGTH_SHORT).show()
-                    Toast.makeText(context, viewModel.songs.value.find { songId == it.id }?.isFavorite.toString(), Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(context, viewModel.songs.value.find { songId == it.id }?.isFavorite.toString(), Toast.LENGTH_SHORT).show()
                     viewModel.playSong(songId = songId)
                 },
                 onAddToFavorite = { song ->

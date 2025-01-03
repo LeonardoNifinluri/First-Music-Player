@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.example.musicplayer.core.model.Song
 import com.example.musicplayer.features.home.presentation.ui.component.ButtonSelectionSection
 import com.example.musicplayer.features.home.presentation.ui.component.HeaderSection
-import com.example.musicplayer.features.home.presentation.ui.component.SongListSection
+import com.example.musicplayer.core.ui.shared_component.SongListSection
 import com.example.musicplayer.ui.theme.MainColor
 
 @Preview(showBackground = true)
@@ -93,8 +93,9 @@ fun HomeScreenPreview() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             SongListSection(
+                title = "Shuffle",
                 songs = songs,
-                onShuffleClick = {
+                onPlayClick = {
                     Log.d("ShuffleButton", "Clicked")
                 },
                 onSortClick = {

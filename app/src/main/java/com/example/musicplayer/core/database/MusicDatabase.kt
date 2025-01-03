@@ -1,7 +1,8 @@
-package com.example.musicplayer.core
+package com.example.musicplayer.core.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.musicplayer.core.dao.FavoriteDao
 import com.example.musicplayer.core.model.Favorite
 
 @Database(

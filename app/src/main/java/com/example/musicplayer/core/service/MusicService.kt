@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import com.example.musicplayer.core.FavoriteDao
+import com.example.musicplayer.core.dao.FavoriteDao
 import com.example.musicplayer.core.model.Favorite
 import com.example.musicplayer.core.model.Song
 import kotlinx.coroutines.CoroutineScope
@@ -189,16 +189,39 @@ class MusicService(
         )
     }
 
-    private fun stopSong(){
-        //this is to update all the songs isPlaying state
-        _songs.value.find { song ->
-            song.isPlaying.value
-        }?.let {
-            it.isPlaying.value = false
+    fun playFavoriteSong(idx: Int){
+        stopSong()
+        if(_favoriteSongs.value.isNotEmpty() && 0 <= idx && idx < _favoriteSongs.value.size){
+            val song = _favoriteSongs.value[idx]
+            //play the song
+            _songs.value.find {
+                it.id == song.id
+            }?.let {
+                _currentSong.value = it
+                it.isPlaying.value = true
+                _indexSong.intValue = _songs.value.indexOf(it)
+                it.uri?.let { songUri ->
+                    _mediaPlayer.value = MediaPlayer().apply{
+                        setDataSource(context, songUri)
+                        prepare()
+                        start()
+                        setOnCompletionListener {
+                            _currentSong.value?.isPlaying?.value = false
+                            playFavoriteSong(idx = (idx + 1) % _favoriteSongs.value.size)
+                        }
+                    }
+                }
+            }
         }
-        _mediaPlayer.value?.stop()
-        _mediaPlayer.value?.release()
-        _mediaPlayer.value = null
+    }
+
+    fun playOneFavoriteSong(songId: Long){
+        _favoriteSongs.value.find {
+            it.id == songId
+        }?.let {
+            val index = _favoriteSongs.value.indexOf(it)
+            playFavoriteSong(idx = index)
+        }
     }
 
     fun pauseSong(){
@@ -226,6 +249,34 @@ class MusicService(
             songId = songId,
             isShuffled = false
         )
+    }
+
+    //if the current song is in the favorite song then move get the index and move
+    //if the current song is not in the favorite song, then start from index 0
+    fun moveFavoriteSong(forward: Boolean){
+        var index = _favoriteSongs.value.indexOf(_currentSong.value)
+        val size = _favoriteSongs.value.size
+        index = if(index != -1){
+            when(forward){
+                true -> (index + 1) % size
+                false -> if(index == 0) size - 1 else index - 1
+            }
+        }else{
+            0
+        }
+        playFavoriteSong(idx = index)
+    }
+
+    private fun stopSong(){
+        //this is to update all the songs isPlaying state
+        _songs.value.find { song ->
+            song.isPlaying.value
+        }?.let {
+            it.isPlaying.value = false
+        }
+        _mediaPlayer.value?.stop()
+        _mediaPlayer.value?.release()
+        _mediaPlayer.value = null
     }
 
 }

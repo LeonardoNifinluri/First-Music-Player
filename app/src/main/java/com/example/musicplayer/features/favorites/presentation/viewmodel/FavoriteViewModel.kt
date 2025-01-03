@@ -1,6 +1,5 @@
 package com.example.musicplayer.features.favorites.presentation.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicplayer.core.model.Song
@@ -20,7 +19,7 @@ class FavoriteViewModel(private val musicService: MusicService): ViewModel() {
     )
 
     fun moveSong(forward: Boolean){
-        musicService.moveSong(forward)
+        musicService.moveFavoriteSong(forward)
     }
 
     fun resumeSong(){
@@ -33,10 +32,11 @@ class FavoriteViewModel(private val musicService: MusicService): ViewModel() {
 
     //this is should be played using favoriteSong
     fun playSong(songId: Long){
-        musicService.playSong(
-            songId = songId,
-            isShuffled = false
-        )
+        musicService.playOneFavoriteSong(songId = songId)
+    }
+
+    fun playFavoriteSongs(){
+        musicService.playFavoriteSong(idx = 0)
     }
 
     fun addToFavorite(song: Song){
