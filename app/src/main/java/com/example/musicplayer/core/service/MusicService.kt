@@ -212,8 +212,15 @@ class MusicService(
                     }
                 }
             }
-            //if complete increment the idx and call the playFavoriteSong
-            //for the state, use _songs
+        }
+    }
+
+    fun playOneFavoriteSong(songId: Long){
+        _favoriteSongs.value.find {
+            it.id == songId
+        }?.let {
+            val index = _favoriteSongs.value.indexOf(it)
+            playFavoriteSong(idx = index)
         }
     }
 
@@ -249,13 +256,13 @@ class MusicService(
     fun moveFavoriteSong(forward: Boolean){
         var index = _favoriteSongs.value.indexOf(_currentSong.value)
         val size = _favoriteSongs.value.size
-        if(index != -1){
-           index = when(forward){
-               true -> (index + 1) % size
-               false -> if(index == 0) size - 1 else index - 1
-           }
+        index = if(index != -1){
+            when(forward){
+                true -> (index + 1) % size
+                false -> if(index == 0) size - 1 else index - 1
+            }
         }else{
-            index = 0
+            0
         }
         playFavoriteSong(idx = index)
     }

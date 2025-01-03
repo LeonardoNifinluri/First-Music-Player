@@ -32,10 +32,7 @@ class FavoriteViewModel(private val musicService: MusicService): ViewModel() {
 
     //this is should be played using favoriteSong
     fun playSong(songId: Long){
-        musicService.playSong(
-            songId = songId,
-            isShuffled = false
-        )
+        musicService.playOneFavoriteSong(songId = songId)
     }
 
     fun playFavoriteSongs(){
